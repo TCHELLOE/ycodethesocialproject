@@ -150,7 +150,10 @@ export async function generateStaticParams() {
  * Cached per slug and page for revalidation
  */
 async function fetchPublishedPageWithLayers(slugPath: string) {
-  const tags = ['all-pages', `route-/${slugPath}`];
+  // NOTE: Do NOT include 'all-pages' here. Next.js bug #63509 causes
+  // revalidateTag('route-/X') to also invalidate every other tag on
+  // the entry, which would cascade to all pages sharing 'all-pages'.
+  const tags = [`route-/${slugPath}`];
   const opts = { tags, revalidate: false as const };
 
   const [core, layers] = await Promise.all([
@@ -182,7 +185,7 @@ async function fetchPublishedPageForMetadata(slugPath: string) {
   return unstable_cache(
     async () => fetchPageByPathForMetadata(slugPath, true),
     [`metadata-/${slugPath}`],
-    { tags: ['all-pages', `route-/${slugPath}`], revalidate: false }
+    { tags: [`route-/${slugPath}`], revalidate: false }
   )();
 }
 
@@ -430,7 +433,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       baseUrl: getSiteBaseUrl({ globalCanonicalUrl: globalSettings.globalCanonicalUrl }),
     }),
     [`data-for-route-/${slugPath}-meta`],
-    { tags: ['all-pages', `route-/${slugPath}`], revalidate: false }
+    { tags: [`route-/${slugPath}`], revalidate: false }
   )();
 
   if (baseUrl) {

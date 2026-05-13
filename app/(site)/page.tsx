@@ -21,7 +21,10 @@ export const revalidate = false; // Cache indefinitely until publish invalidates
  * Cached with tag-based revalidation (no time-based stale cache)
  */
 async function fetchPublishedHomepage() {
-  const tags = ['all-pages', 'route-/'];
+  // NOTE: Do NOT include 'all-pages' here. Next.js bug #63509 causes
+  // revalidateTag to also invalidate every other tag on the entry,
+  // which would cascade to all pages sharing 'all-pages'.
+  const tags = ['route-/'];
   const opts = { tags, revalidate: false as const };
 
   const [core, layers] = await Promise.all([
@@ -265,7 +268,7 @@ export async function generateMetadata(): Promise<Metadata> {
       baseUrl: getSiteBaseUrl({ globalCanonicalUrl: globalSettings.globalCanonicalUrl }),
     }),
     ['data-for-route-/-meta'],
-    { tags: ['all-pages', 'route-/'], revalidate: false }
+    { tags: ['route-/'], revalidate: false }
   )();
 
   if (baseUrl) {

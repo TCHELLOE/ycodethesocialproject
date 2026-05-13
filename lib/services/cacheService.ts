@@ -58,6 +58,9 @@ export async function invalidatePages(routePaths: string[]): Promise<boolean> {
  */
 export async function clearAllCache(): Promise<void> {
   try {
+    // 'all-pages' tag is only on global resources (redirects, settings, fonts).
+    // Per-page caches are tagged with route-/<slug> only, so revalidatePath
+    // on the root layout is what actually invalidates every page entry.
     revalidateTag('all-pages', { expire: 0 });
     revalidatePath('/', 'layout');
   } catch (error) {
