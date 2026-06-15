@@ -1,50 +1,52 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://assets.ycodeapp.com/assets/app13650/Icons/9l3kz_ycode-logo-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://assets.ycodeapp.com/assets/app13650/Icons/arpQnWd8noiOpoMx0rFsCWN6MY0kCgpxPk3zbuzO.svg">
-    <img alt="Ycode Logo" src="https://assets.ycodeapp.com/assets/app13650/Icons/arpQnWd8noiOpoMx0rFsCWN6MY0kCgpxPk3zbuzO.svg" width="200">
-  </picture>
-</p>
+# Call Tracker
 
-## About Ycode
+Persönliches Tool zum Tracken von Kaltakquise-Anrufen (Mac/iPhone, als Web-App).
 
-Ycode is a visual website builder and CMS designed for creating and managing websites without writing code. It is available as a self-hosted Open Source project or as a fully managed [Cloud][cloud] service.
+## Features
 
-## Learning Ycode
+- Tagesziel für Anrufe setzen
+- Neuer Anruf: Telefonnummer + Name (optional), `tel:`-Link zum Wählen
+- Ergebnis erfassen: **Erreicht** / **Nur geklingelt** / **Mailbox**
+  - Bei **Erreicht**: kurzes Notizfeld für Call-Feedback
+  - Bei **Nur geklingelt** / **Mailbox**: fertiger, kopierbarer Textschnipsel mit
+    Datum + Uhrzeit (Geräte-Zeitzone + frei wählbare zweite Zeitzone, z. B.
+    Europe/Berlin) zum Einfügen in deine Numbers/Excel-Tabelle
+- Tagesstatistik / Motivationsanzeige (Anrufe gemacht / Ziel / erreicht)
+- PIN-geschützt, Daten persistent in Upstash Redis
 
-Ycode has extensive [documentation][docs]. We actively maintain and improve it, so if something is unclear or incomplete, feel free to open an issue. We welcome any feedback that helps make the docs better.
+## Setup
 
-## Setting Up Ycode Open Source
+1. **Dependencies installieren**
 
-To self-host Ycode you will need:
+   ```bash
+   npm install
+   ```
 
-- A [GitHub](https://github.com) account
-- A [Supabase](https://supabase.com) account
-- A [Vercel](https://vercel.com) account
+2. **Upstash Redis anlegen** (kostenloser Free-Tier)
 
-Follow the [installation instructions][install] to get started.
+   - In Vercel-Projekt: Tab **Storage** → **Create Database** → **Upstash for
+     Redis** (Marketplace-Integration) → mit dem Projekt verbinden
+   - Dadurch werden automatisch die Env-Vars `UPSTASH_REDIS_REST_URL` und
+     `UPSTASH_REDIS_REST_TOKEN` gesetzt
 
-## Support
+3. **PIN setzen**
 
-We provide official support on [Ycode Cloud][cloud] projects. Community-driven support for the Open Source version is available in [Discord][discord].
+   - Env-Var `APP_PIN` setzen (z. B. `1234`) – schützt den Zugriff auf die App
 
-## Contributing
+4. **Lokal entwickeln**
 
-Thank you for considering contributing to Ycode! We ask that you review the [contribution guide][contributing] before opening issues or submitting pull requests.
+   ```bash
+   cp .env.example .env.local   # ausfüllen mit Upstash-Daten + APP_PIN
+   npm run dev
+   ```
 
-## Code of Conduct
+5. **Deploy**
 
-To ensure the Ycode community is welcoming to all, please review and abide by our [Code of Conduct][coc].
+   ```bash
+   vercel deploy
+   ```
 
-## Important Links
+## Auf dem iPhone/Mac nutzen
 
-- [Ycode Website][cloud]
-- [Ycode Documentation][docs]
-- [Ycode Discord Community][discord]
-
-[cloud]: https://www.ycode.com
-[docs]: https://docs.ycode.com/
-[install]: https://docs.ycode.com/docs/getting-started/installation
-[discord]: https://discord.gg/xadfw2DV4q
-[contributing]: https://github.com/ycode/ycode/blob/main/CONTRIBUTING.md
-[coc]: https://github.com/ycode/ycode/blob/main/CODE_OF_CONDUCT.md
+Nach dem Deploy die URL im Browser öffnen, einloggen (PIN) und über
+"Zum Home-Bildschirm hinzufügen" (iPhone) bzw. als Lesezeichen/PWA (Mac) ablegen.
